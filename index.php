@@ -15,6 +15,25 @@ $cars = $repository->All()
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+<header>
+    <div id="top-header">
+        <div id="logo">
+            <img src="images/logo.png" />
+        </div>
+        <nav>
+            <ul>
+                <li class="active">
+                    <a href="register.php">aísgRegisztáció</a>
+                </li>
+                <li>
+                    <a href="register.php">Regisztáció</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div id="header-image-menu">
+    </div>
+</header>
 
 <body>
 
@@ -24,7 +43,7 @@ $cars = $repository->All()
     <ul>
         <?php
         foreach ( $cars as $car){
-        echo '<li>' . $car . '</li>';
+        echo '<li>' . $car->brand . '</li>';
         }
 
 ?>

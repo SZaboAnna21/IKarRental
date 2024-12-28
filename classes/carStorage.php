@@ -30,7 +30,7 @@ public function __construct($brand = null, $model = null, $year = null, $transmi
         $instance = new Car();
         $instance->_id = $arr['_id'] ?? null;
         $instance->brand = $arr['brand'] ?? null;
-        $instance->modell = $arr['modell'] ?? null;
+        $instance->model = $arr['model'] ?? null;
         $instance->year = $arr['year'] ?? null;
         $instance->transmission = $arr['transmission'] ?? null;
         $instance->fuel_type = $arr['fuel_type'] ?? null;
@@ -40,7 +40,7 @@ public function __construct($brand = null, $model = null, $year = null, $transmi
         return $instance;
     }
 
-    public static function from_object(object $obj): Car
+    public static function from_object( $obj): Car
     {
         return self::from_array((array) $obj);
     }
