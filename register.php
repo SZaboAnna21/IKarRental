@@ -49,6 +49,26 @@ if (count($_POST) != 0) {
 </head>
 
 <body>
+<header>
+    <div id="top-header">
+        <div id="logo">
+            <a href="index.php">IkarRental</a>
+            <img src="images/logo.png" />
+        </div>
+        <nav>
+            <ul>
+                <li class="active">
+                    <a href="login.php">Bejelentkezés</a>
+                </li>
+                <li>
+                    <a href="register.php">Regisztáció</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div id="header-image-menu">
+    </div>
+</header>
     <h2>Regisztráció</h2>
     <?php if ($errors) {?>
     <ul>

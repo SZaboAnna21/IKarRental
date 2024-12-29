@@ -9,14 +9,14 @@ function is_empty($input, $key)
 function validate($input, &$errors, $auth)
 {
 
-    if (is_empty($input, "username")) {
+    if (is_empty($input, "email")) {
         $errors[] = "Felhasználónév megadása kötelező";
     }
     if (is_empty($input, "password")) {
         $errors[] = "Jelszó megadása kötelező";
     }
     if (count($errors) == 0) {
-        if (!$auth->check_credentials($input['username'], $input['password'])) {
+        if (!$auth->check_credentials($input['email'], $input['password'])) {
             $errors[] = "Hibás felhasználónév vagy jelszó";
         }
     }
@@ -45,6 +45,26 @@ if (count($_POST) != 0) {
 </head>
 
 <body>
+<header>
+    <div id="top-header">
+        <div id="logo">
+            <a href="index.php">IkarRental</a>
+            <img src="images/logo.png" />
+        </div>
+        <nav>
+            <ul>
+                <li class="active">
+                    <a href="login.php">Bejelentkezés</a>
+                </li>
+                <li>
+                    <a href="register.php">Regisztáció</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div id="header-image-menu">
+    </div>
+</header>
     <h2>Bejelentkezés</h2>
     <?php if ($errors) {?>
     <ul>
@@ -54,8 +74,8 @@ if (count($_POST) != 0) {
     </ul>
     <?php }?>
     <form action="" method="post">
-        <label for="username">Felhasználó: </label>
-        <input id="username" name="username" type="text"><br>
+        <label for="email">Email cím: </label>
+        <input id="email" name="email" type="text"><br>
         <label for="password">Jelszó: </label>
         <input id="password" name="password" type="password"><br>
         <input type="submit" value="Bejelentkezés">
