@@ -2,7 +2,7 @@
 include_once "storage.php";
 
 class Car{
-    public $_id = null;
+    public $id = null;
     public $brand;
     public $model;
     public $year;
@@ -28,7 +28,7 @@ public function __construct($brand = null, $model = null, $year = null, $transmi
     public static function from_array(array $arr): Car
     {
         $instance = new Car();
-        $instance->_id = $arr['_id'] ?? null;
+        $instance->id = $arr['id'] ?? null;
         $instance->brand = $arr['brand'] ?? null;
         $instance->model = $arr['model'] ?? null;
         $instance->year = $arr['year'] ?? null;
@@ -95,6 +95,12 @@ class CarRepository
     {
         $this->storage->updateMany($condition, $updater);
     }
+    public function findByIds(array $ids): array
+{
+    return $this->findCarsByCondition(function ($car) use ($ids) {
+        return in_array($car["id"], $ids);
+    });
+}
 
 }
 ?>

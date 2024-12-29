@@ -1,7 +1,7 @@
 <?php
 require_once "classes/carStorage.php";
-
-session_start();
+require_once "classes/auth.php";
+$auth = new Auth();
 function is_empty( $key)
 {
     return !(isset($_POST[$key]) && trim($_POST[$key]) !== "");
@@ -10,7 +10,6 @@ $repository = new CarRepository();
 $carsf = $repository->all();
 
 if (!(is_empty( "transmission"))) {
-    echo "benn";
     $trans = $_POST["transmission"];
     $carsf = array_filter($carsf, function ($car) use ( $trans) {
         return $car->transmission === $trans;
@@ -59,14 +58,28 @@ $totalItems = count($carsf);
             <img src="images/logo.png" />
         </div>
         <nav>
-            <ul>
-                <li class="active">
+                <?php
+                 if (!$auth->is_authenticated()) {
+                 ?>
+                 <ul>
+                 <li>
                     <a href="login.php">Bejelentkezés</a>
                 </li>
                 <li>
                     <a href="register.php">Regisztáció</a>
                 </li>
             </ul>
+            <?php }
+            else{?>
+                <ul>
+                 <li>
+                    <a href="logout.php">Kijelentkezés</a>
+                </li>
+                <li>
+                    <a href="profil.php">Profil</a>
+                </li>
+            </ul>
+            <?php } ?>
         </nav>
     </div>
     <div id="header-image-menu">
@@ -107,7 +120,19 @@ $totalItems = count($carsf);
            $row = array_slice($carsf, $i, $itemsPerRow);
            echo "<div class='row'>";
            foreach ($row as $item) {
-               echo "<div class='box'>" . htmlspecialchars($item->brand ). "</div>";
+            $id = (string)$item->id;
+            $brand = htmlspecialchars($item->brand); // Car brand
+            $model = htmlspecialchars($item->model ?? ""); // Car model (optional)
+            $price = htmlspecialchars($item->daily_price_huf ?? ""); // Daily price
+            $passengers = htmlspecialchars($item->passengers ?? ""); // Passenger capacity
+            $imagePath = htmlspecialchars($item->image_path ?? "default.jpg"); // Car image (default if none)
+            echo "
+            <div class='box' onclick=\"window.location.href='car-details.php?id=$id'\">
+                 <img src='images/$imagePath' alt='$brand $model' class='car-image'>
+                <h2>$brand $model</h2>
+                <p>Price: $price HUF/day</p>
+                <p>Passengers: $passengers</p>
+            </div>";
            }
            $remainingSlots = $itemsPerRow - count($row);
            for ($j = 0; $j < $remainingSlots; $j++) {

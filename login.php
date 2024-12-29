@@ -28,7 +28,7 @@ $errors = [];
 if (count($_POST) != 0) {
     if (validate($_POST, $errors, $auth)) {
         $auth->login($_POST);
-        header('Location: makeorder.php');
+        header('Location: index.php');
         die();
     }
 }
