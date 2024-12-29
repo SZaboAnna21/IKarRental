@@ -23,7 +23,7 @@ $cars = $repository->All()
         <nav>
             <ul>
                 <li class="active">
-                    <a href="register.php">aísgRegisztáció</a>
+                    <a href="login.php">Bejelentkezés</a>
                 </li>
                 <li>
                     <a href="register.php">Regisztáció</a>
