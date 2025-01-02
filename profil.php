@@ -12,7 +12,6 @@ $user = $users->findOne(['email' => $email]);
 $orderRepository = new OrderRepository();
 $profilOs = $orderRepository->getCarIdsByEmail($email);
 if ($user['admin'] == true){
-    
     $profilOs = $orderRepository->All();
 }
 //$carsf = $carRepository->findByIds($profilOs);

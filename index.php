@@ -98,14 +98,11 @@ $totalItems = count($carsf);
                  if (!$auth->is_authenticated()) {
                     $user = null;
                  ?>
-                 <ul>
-                 <li>
-                    <a href="login.php">Bejelentkezés</a>
-                </li>
-                <li>
-                    <a href="register.php">Regisztáció</a>
-                </li>
-            </ul>
+                
+                    <a href="login.php" class="button1">Bejelentkezés</a>
+               
+                    <a href="register.php" class="button1">Regisztáció</a>
+             
             <?php }
             else{
                 $email = $_SESSION["user"];
@@ -113,14 +110,11 @@ $totalItems = count($carsf);
                     echo $email;
 
                 ?>
-                <ul>
-                 <li>
-                    <a href="logout.php">Kijelentkezés</a>
-                </li>
-                <li>
-                    <a href="profil.php">Profil</a>
-                </li>
-            </ul>
+                
+                    <a href="logout.php" class="button1">Kijelentkezés</a>
+                
+                    <a href="profil.php" class="button1">Profil</a>
+          
             <?php }
             ?>
         </nav>
@@ -134,28 +128,31 @@ $totalItems = count($carsf);
     <a href="register.php">Regisztáció</a>
     <div id="szures">
         <form action="" method="post">
-            <label for="transmission">Váltótípusa</label>
-            <select name="transmission" id="transmission">
-            <option>---Válassz---</option>
-                <option value="Automatic">Automatic</option>
-                <option value="Manual">Manual</option>
-            </select>
-            <label for="filterfero">férőhely</label>
-            <input type="number" name="filterfero"  value="<?=isset($_POST["filterfero"]) ? $_POST["filterfero"] : ""?>"  min="1" max="20">
-                    
-            <label for="min_price">Price range:</label>
-            <input type="number" name="min_price" id="min_price" min="0" step="100" 
-            value="<?= isset($_POST['min_price']) ? htmlspecialchars($_POST['min_price']) : '' ?>" 
-            oninput="updateMaxMin()">
+            <div class="inline-group">
+                <label for="transmission">Váltótípusa</label>
+                <select name="transmission" id="transmission">
+                <option>---Válassz---</option>
+                    <option value="Automatic">Automatic</option>
+                    <option value="Manual">Manual</option>
+                </select>
+                <label for="filterfero">férőhely</label>
+                <input type="number" name="filterfero"  value="<?=isset($_POST["filterfero"]) ? $_POST["filterfero"] : ""?>"  min="1" max="20">
+                        
+                <label for="min_price">Price range:</label>
+                <input type="number" name="min_price" id="min_price" min="0" step="100" 
+                value="<?= isset($_POST['min_price']) ? htmlspecialchars($_POST['min_price']) : '' ?>" 
+                oninput="updateMaxMin()">
 
-            <label for="max_price">-</label>
-            <input type="number" name="max_price" id="max_price" min="0" step="100" 
-            value="<?= isset($_POST['max_price']) ? htmlspecialchars($_POST['max_price']) : '' ?>">
+                <label for="max_price">-</label>
+                <input type="number" name="max_price" id="max_price" min="0" step="100" 
+                value="<?= isset($_POST['max_price']) ? htmlspecialchars($_POST['max_price']) : '' ?>">
+            </div>
+            <div class="inline-group">
+                <label for="datefrom">Dátumtól: </label>
+                <input id="datefrom" name="datefrom" type="date"> - 
+                <input id="dateuntil" name="dateuntil" type="date">-ig 
 
-            <label for="datefrom">Dátumtól: </label>
-            <input id="datefrom" name="datefrom" type="date"> - 
-            <input id="dateuntil" name="dateuntil" type="date"> -ig<br>
-            
+            </div>
             <button type="submit"> Szűrés</button>
         </form>
 
@@ -178,15 +175,18 @@ $totalItems = count($carsf);
             $model = htmlspecialchars($item->model ?? "");
             $price = htmlspecialchars($item->daily_price_huf ?? ""); 
             $passengers = htmlspecialchars($item->passengers ?? ""); 
-            $imagePath = htmlspecialchars($item->image_path ?? "default.jpg"); 
+            $imagePath = htmlspecialchars($item->image ?? "default.jpg"); 
             echo "
             <div class='box'\">
-                 <img src='images/$imagePath' alt='$brand $model' class='car-image'>
-                <h2>$brand $model</h2>
-                <p>Price: $price HUF/day</p>
-                <p>Passengers: $passengers</p>";
+                 <img src='" . htmlspecialchars($imagePath) . "' alt='" . htmlspecialchars($brand . ' ' . $model) . "' class='car-image'>
+            <h2>$brand $model</h2>
+             <div class='inline-group'>
+                <p> $price Ft
+                <br>Passengers: $passengers</p>";
                 if  ($user && isset($user['admin']) && $user['admin'] == true) {
-                    echo "<form method='GET' action='delete_car.php' class='delete-form'>
+                    echo "
+                    <div class='under' >
+                    <form method='GET' action='delete_car.php' class='delete-form'>
                             <input type='hidden' name='car_id' value='" . htmlspecialchars($id) . "'>
                             <button type='submit' class='delete-button'>Delete</button>
                           </form>
@@ -195,6 +195,8 @@ $totalItems = count($carsf);
                           <input type='hidden' name='car_id' value='" . htmlspecialchars($id) . "'>
                           <button type='submit' class='delete-button'>Modify</button>
                         </form>
+
+                        </div>
                         ";
                         
                 }
@@ -208,7 +210,8 @@ $totalItems = count($carsf);
                 
             
         }
-        echo "</div>";
+        echo " </div>
+        </div>";
     }
 
       if ($isAdmin && $i + $itemsPerRow >= $totalItems) {

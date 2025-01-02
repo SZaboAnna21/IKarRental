@@ -10,20 +10,173 @@
 }
 
 .box {
+    background-color: #781727;
+    border-radius: 15px;
     width: 18%;
     padding: 10px;
     border: 1px solid #ccc;
-    background-size: cover; /* Makes the image cover the entire div */
-    background-position: center; /* Centers the image within the div */
-    background-repeat: no-repeat; /* Prevents the image from repeating */
-    width: 200px; /* Example width */
-    height: 150px; /* Example height */
-    padding: 10px; /* Optional padding */
-    border: 1px solid #ccc; /* Optional border */
-    margin: 5px; /* Optional margin */
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    width: 200px; 
+    height: 350px; 
+    padding: 10px; 
+    border: 1px solid #ccc; 
+    margin: 5px;
     
 }
 
 .hidden {
     visibility: hidden;
 }
+
+header{
+    display: flex;                 /* Use flexbox for alignment */
+    justify-content: space-between; /* Space out the logo and nav */
+    align-items: center;           
+    padding: 10px 20px; 
+       
+    background-color: rgb(65, 78, 134);
+}
+body {
+    background-color: rgb(50, 37, 79);
+}
+
+
+button {  display: flex;                 
+    gap: 15px;                     
+    margin-left: auto;  
+    display: inline-block;
+    padding: 15px 25px;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: #fff;
+    background-color: #AC5B67;
+    border: 1px;
+    border-radius: 15px;
+    box-shadow: 0 9px #937575;
+  }
+  
+  button:hover {background-color: #974551}
+  
+  button:active {
+    background-color: #781727;
+    box-shadow: 0 5px #ac7a7a;
+    transform: translateY(4px);
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+  }
+  nav {
+    display: flex;                 
+    gap: 15px;                     
+    margin-left: auto;         
+  }
+
+.button1 {
+
+   flex-direction: initial;
+    display: inline-block;
+    display: inline-block;          
+    padding: 10px 20px;             
+    font-size: 16px;              
+    font-weight: bold;              
+    color: #ffffff;                 
+    text-align: center;           
+    text-decoration: none;          
+    background-color: #974551;      
+    border: 20px;                   
+    border-radius: 5px;             
+    transition: background-color 0.3s, transform 0.2s; 
+  }
+  
+
+  .button1:hover,
+  .button1:focus {
+    background-color: #781727;    
+    transform: scale(1.05);        
+  }
+  
+  .button1:active {
+    background-color: #4a0813;
+    transform: scale(0.95);         
+  }
+  
+  
+
+form {
+    max-width: 600px;             
+    margin: 20px 0 20px auto;    
+    padding: 20px;       
+    display: flex;
+    flex-wrap: wrap;              
+    justify-content: space-between;
+    gap: 10px;
+    max-width: 60%;            
+    padding: 10px;              
+    border-radius: 12px;         
+    font-family: 'Poppins', sans-serif; 
+  }
+  
+  form label {
+    font-size: 14px;       
+    color: #050101;       }
+  form input,
+  form select {
+    padding: 10px;         /* Comfortable padding */
+    font-size: 14px;       /* Match label font size */
+    border: 1px solid #36344a; /* Light border */
+    border-radius: 8px;    /* Smooth corners */
+    background-color: #ba6ba2; /* Neutral background */
+    transition: all 0.2s;  /* Smooth hover/focus effects */
+    width: 100%;           /* Ensure full width */
+  }
+  
+  /* Input and select hover/focus effects */
+  form input:focus,
+  form select:focus {
+    outline: none;                   /* Remove outline */
+    border-color: #e403e8;           /* Accent color */
+    box-shadow: 0 0 5px rgba(62, 2, 92, 0.847); /* Subtle glow */
+  }
+  
+
+  
+
+  
+ 
+  @media (max-width: 480px) {
+    form {
+      padding: 15px;       /* Adjust padding for smaller screens */
+      gap: 10px;           /* Reduce gaps between elements */
+    }
+  }
+  /* Inline group styling */
+.inline-group {
+    display: flex;
+    justify-content: space-between; /* Spread elements evenly */
+    align-items: center;            /* Align items in the center */
+    gap: 10px;                      /* Space between the grouped inputs */
+  }
+  
+  .inline-group div {
+    flex: 1;                        /* Each div takes equal space */
+  }
+  
+  .inline-group div label {
+    display: block;                 /* Keep labels on top */
+    margin-bottom: 5px;
+  }
+
+
+  .under {
+    display: block;
+    justify-content: space-between; /* Spread elements evenly */
+    align-items: center;            /* Align items in the center */
+    gap: 1px;                      /* Space between the grouped inputs */
+  }

@@ -1,28 +1,6 @@
 {
     "1": {
         "id": 1,
-        "brand": "Honda",
-        "model": "Civic",
-        "year": 2019,
-        "transmission": "Manual",
-        "fuel_type": "Petrol",
-        "passengers": 5,
-        "daily_price_huf": 16250,
-        "image": "https:\/\/media.ed.edmunds-media.com\/honda\/civic\/2019\/oem\/2019_honda_civic_sedan_touring_fq_oem_1_815.jpg"
-    },
-    "2": {
-        "id": 2,
-        "brand": "Nissan",
-        "model": "Altima",
-        "year": 2016,
-        "transmission": "Automatic",
-        "fuel_type": "Petrol",
-        "passengers": 5,
-        "daily_price_huf": 14400,
-        "image": "https:\/\/media.ed.edmunds-media.com\/nissan\/altima\/2016\/oem\/2016_nissan_altima_sedan_25-sr_fq_oem_1_815.jpg"
-    },
-    "3": {
-        "id": 3,
         "brand": "Volkswagen",
         "model": "Jetta",
         "year": 2014,
@@ -32,8 +10,8 @@
         "daily_price_huf": 13000,
         "image": "https:\/\/media.ed.edmunds-media.com\/volkswagen\/jetta\/2025\/oem\/2025_volkswagen_jetta_sedan_sel_fq_oem_1_815.jpg"
     },
-    "4": {
-        "id": 4,
+    "2": {
+        "id": 2,
         "brand": "Subaru",
         "model": "Impreza",
         "year": 2012,
@@ -110,4 +88,3 @@
         "image": "https:\/\/media.ed.edmunds-media.com\/tesla\/model-x\/2024\/oem\/2024_tesla_model-x_4dr-suv_plaid_fq_oem_1_815.jpg"
     }
 }
-
