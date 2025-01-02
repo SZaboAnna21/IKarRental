@@ -50,7 +50,7 @@ public function __construct($brand = null, $model = null, $year = null, $transmi
 
 class CarRepository
 {
-    private $storage;
+    public $storage;
     public function __construct()
     {
         $filen = new JsonIO('data/cars.json');
@@ -86,10 +86,13 @@ class CarRepository
         });
     }
 
+
+
     public function findCarsByCondition(callable $condition): array
     {
         return $this->convert($this->storage->findMany($condition));
     }
+
 
     public function updateCars(callable $condition, callable $updater): void
     {
@@ -101,6 +104,7 @@ class CarRepository
         return in_array($car["id"], $ids);
     });
 }
+
 
 }
 ?>

@@ -2,7 +2,7 @@
 include_once "storage.php";
 
 class Order{
-    public $_id = null;
+    public $id = null;
     public $carid;
     public $email;
     public $datestart;
@@ -21,7 +21,7 @@ public function __construct($carid = null, $email = null, $datestart = null, $da
     public static function from_array(array $arr): Order
     {
         $instance = new Order();
-        $instance->_id = $arr['_id'] ?? null;
+        $instance->id = $arr['id'] ?? null;
         $instance->carid = $arr['carid'] ?? null;
         $instance->email = $arr['email'] ?? null;
         $instance->datestart = $arr['datestart'] ?? null;
@@ -55,7 +55,7 @@ class OrderRepository
     }
     public function add(Order $order): string
     {
-        return $this->storage->insert($order);
+        return $this->storage->add($order);
     }
 
     public function deleteOrder(callable $condition): void
@@ -71,7 +71,7 @@ class OrderRepository
 
     public function getCarIdsByEmail(string $email): array {
         $orders = $this->findByEmail($email);
-        return array_map(fn($order) => $order->carid, $orders);
+        return array_map(fn($order) => $order, $orders);
     }
 
 
@@ -79,6 +79,21 @@ class OrderRepository
     {
         $this->storage->updateMany($condition, $updater);
     }
+    public function findByCarId(string $carId): array
+    {
+        $allOrders = $this->storage->findAll(); // Retrieve all orders
+        //error_log("All orders: " . print_r($allOrders, true)); // Debug: Log all orders
+    
+        $filteredOrders = array_filter($allOrders, function ($order) use ($carId) {
+            return isset($order['carid']) && $order['carid'] === (int)$carId;
+        });
+    
+        //error_log("Filtered orders for carId {$carId}: " . print_r($filteredOrders, true)); // Debug: Log filtered orders
+    
+        return $this->convert($filteredOrders);
+    }
+    
+
 
 }
 ?>

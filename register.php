@@ -31,6 +31,7 @@ function validate($input, &$errors, $auth)
 $errors = [];
 if (count($_POST) != 0) {
     if (validate($_POST, $errors, $auth)) {
+        $_POST["admin"] = false;
         $auth->register($_POST);
         header('Location: login.php');
         exit();

@@ -1,14 +1,68 @@
 <?php
 require_once "classes/carStorage.php";
 require_once "classes/auth.php";
+require_once "classes/orderStorage.php";
+$orderRepository = new OrderRepository();
+session_start();
 $auth = new Auth();
-
-// Check if an ID is provided
+function is_empty($input, $key)
+{
+    return !(isset($input[$key]) && trim($input[$key]) !== "");
+} 
 if (isset($_GET['id'])) {
     $carId = (int)$_GET['id'];
     $repository = new CarRepository();
     $car = $repository->findById($carId);
 }
+else {
+    $car = null;
+}
+$ordersforthiscar = $orderRepository->findByCarId((string)$carId);
+
+function validate($input, &$errors,  $auth, $car, $ordersforthiscar)
+{
+    if (is_empty($input, "dateuntil") ||
+        is_empty($input, "datefrom")) {
+        $errors[] = "Dátumválasztáskötelező";
+    }
+    else if (!$auth->is_authenticated()){
+        
+        $errors[] = "jelentkezz be elobb!";
+        ///header("Location: login.php"); ????????
+    }
+    else {
+        $dateFrom = isset($input["datefrom"]) ? strtotime($input["datefrom"]) : null;
+        $dateUntil = isset($input["dateuntil"]) ? strtotime($input["dateuntil"]) : null;
+
+        if ($dateFrom && $dateUntil && $dateUntil < $dateFrom) {
+            $errors[] = "A végdátumnak nagyobbnak vagy egyenlőnek kell lennie, mint a kezdő dátum.";
+        } elseif (!$dateFrom || !$dateUntil) {
+            $errors[] = "Hibás dátumformátum.";
+        }
+        foreach ($ordersforthiscar as $order) {
+            $odateS = strtotime($order->datestart);
+            $odateE = strtotime($order->dateend);
+            if ( $odateS <= $dateUntil && $odateS >= $dateFrom ||  $dateFrom >= $odateS && $dateFrom <= $odateE ){
+                $errors[] = "Ekkora nem tudsz foglalni.";
+                $ds = $_POST['datefrom'];
+                $de = $_POST['dateuntil'];
+                header("Location: unsuccess.php?Car={$car->id}&datef={$ds}&dateu={$de}");
+            }
+        }
+    }
+
+    return !(bool) $errors;
+}
+$errors = [];
+if (count($_POST)>= 1){
+    if (validate($_POST, $errors, $auth, $car,$ordersforthiscar) ) {
+        $ds = $_POST['datefrom'];
+        $de = $_POST['dateuntil'];
+        $orderRepository->add(new Order($car->id, $_SESSION["user"], $_POST["datefrom"], $_POST["dateuntil"]));
+        header("Location: success.php?Car={$car->id}&datef={$ds}&dateu={$de}");
+    }
+}
+
 
 ?>
 <!DOCTYPE html>
@@ -53,6 +107,11 @@ if (isset($_GET['id'])) {
     </div>
 </header>
 <body>
+<?php if ($errors) {?>
+        <?php foreach ($errors as $error) {?>
+        <a><?=$error?></a>
+        <?php }?>
+    <?php }?>
 
 <div class="car-details">
         <h2><?php echo htmlspecialchars($car->brand . " " . $car->model); ?></h2>
@@ -63,6 +122,13 @@ if (isset($_GET['id'])) {
         <p>Price: <?php echo htmlspecialchars($car->daily_price_huf); ?> HUF/day</p>
         <img src="<?php echo htmlspecialchars($car->image); ?>" alt="Car Image">
     </div>
+
+    <form action="" method="post">
+        <label for="datefrom">Dátumtól: </label>
+        <input id="datefrom" name="datefrom" type="date"> - 
+        <input id="dateuntil" name="dateuntil" type="date"> -ig<br>
+        <input type="submit" value="Foglalás">
+    </form>
     
 </body>
 </html>

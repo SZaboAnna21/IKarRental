@@ -45,4 +45,8 @@ class Auth
     {
         unset($_SESSION["user"]);
     }
+
+    public function isadmin(){
+        return $this->userRepository->admin === true;
+    }
 }

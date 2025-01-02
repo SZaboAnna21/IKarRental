@@ -13,7 +13,15 @@
     width: 18%;
     padding: 10px;
     border: 1px solid #ccc;
-    text-align: center;
+    background-size: cover; /* Makes the image cover the entire div */
+    background-position: center; /* Centers the image within the div */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+    width: 200px; /* Example width */
+    height: 150px; /* Example height */
+    padding: 10px; /* Optional padding */
+    border: 1px solid #ccc; /* Optional border */
+    margin: 5px; /* Optional margin */
+    
 }
 
 .hidden {

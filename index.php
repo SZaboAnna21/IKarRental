@@ -1,6 +1,10 @@
 <?php
 require_once "classes/carStorage.php";
 require_once "classes/auth.php";
+require_once "classes/orderStorage.php";
+$orderRepository = new OrderRepository();
+$users = new UserRepository();
+
 $auth = new Auth();
 function is_empty( $key)
 {
@@ -36,6 +40,37 @@ if (!(is_empty("filterfero"))) {
        
 }
 
+if (!(is_empty( "datefrom")) && !(is_empty( "dateuntil"))) {
+    $dateFrom = isset($_POST["datefrom"]) ? strtotime($_POST["datefrom"]) : null;
+    $dateUntil = isset($_POST["dateuntil"]) ? strtotime($_POST["dateuntil"]) : null;
+    if ($dateFrom && $dateUntil && $dateUntil < $dateFrom) {
+         
+        $carsf = [];
+    } elseif (!$dateFrom || !$dateUntil) {
+        
+        $carsf = [];
+    }
+    $carsfdate = [];
+    foreach($carsf as $car)
+    {
+        $carId =$car->id;
+       
+        $ordersforthiscar = $orderRepository->findByCarId((string)$carId);
+        $okay = true;
+        foreach ($ordersforthiscar as $order) {
+            $odateS = strtotime($order->datestart);
+            $odateE = strtotime($order->dateend);
+            if ( $odateS <= $dateUntil && $odateS >= $dateFrom ||  $dateFrom >= $odateS && $dateFrom <= $odateE ){$okay = false;}
+        }
+        if($okay){
+            array_push($carsfdate, $car);
+        }
+       
+    }
+
+    $carsf = $carsfdate;
+}
+
 
 $itemsPerRow = 5;
 $totalItems = count($carsf);
@@ -50,6 +85,7 @@ $totalItems = count($carsf);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="st.css">
+   
 </head>
 <header>
     <div id="top-header">
@@ -60,6 +96,7 @@ $totalItems = count($carsf);
         <nav>
                 <?php
                  if (!$auth->is_authenticated()) {
+                    $user = null;
                  ?>
                  <ul>
                  <li>
@@ -70,7 +107,12 @@ $totalItems = count($carsf);
                 </li>
             </ul>
             <?php }
-            else{?>
+            else{
+                $email = $_SESSION["user"];
+                    $user = $users->findOne(['email' => $email]);
+                    echo $email;
+
+                ?>
                 <ul>
                  <li>
                     <a href="logout.php">Kijelentkezés</a>
@@ -79,7 +121,8 @@ $totalItems = count($carsf);
                     <a href="profil.php">Profil</a>
                 </li>
             </ul>
-            <?php } ?>
+            <?php }
+            ?>
         </nav>
     </div>
     <div id="header-image-menu">
@@ -93,6 +136,7 @@ $totalItems = count($carsf);
         <form action="" method="post">
             <label for="transmission">Váltótípusa</label>
             <select name="transmission" id="transmission">
+            <option>---Válassz---</option>
                 <option value="Automatic">Automatic</option>
                 <option value="Manual">Manual</option>
             </select>
@@ -108,41 +152,91 @@ $totalItems = count($carsf);
             <input type="number" name="max_price" id="max_price" min="0" step="100" 
             value="<?= isset($_POST['max_price']) ? htmlspecialchars($_POST['max_price']) : '' ?>">
 
-                    <button type="submit"> Szűrés</button>
+            <label for="datefrom">Dátumtól: </label>
+            <input id="datefrom" name="datefrom" type="date"> - 
+            <input id="dateuntil" name="dateuntil" type="date"> -ig<br>
+            
+            <button type="submit"> Szűrés</button>
         </form>
 
     </div>
 
 
     <?php
-       echo "<div class='container'>";
-       for ($i = 0; $i < $totalItems; $i += $itemsPerRow) {
-           $row = array_slice($carsf, $i, $itemsPerRow);
-           echo "<div class='row'>";
-           foreach ($row as $item) {
+    $isAdmin = $user && isset($user['admin']) && $user['admin'] == true;
+    $totalItems = count($carsf) + ($isAdmin ? 1 : 0);
+
+    echo "<div class='container'>";
+    for ($i = 0; $i < $totalItems; $i += $itemsPerRow) {
+        $row = array_slice($carsf, $i, $itemsPerRow);
+        
+        echo "<div class='row'>";
+        foreach ($row as $item) {
+          
             $id = (string)$item->id;
-            $brand = htmlspecialchars($item->brand); // Car brand
-            $model = htmlspecialchars($item->model ?? ""); // Car model (optional)
-            $price = htmlspecialchars($item->daily_price_huf ?? ""); // Daily price
-            $passengers = htmlspecialchars($item->passengers ?? ""); // Passenger capacity
-            $imagePath = htmlspecialchars($item->image_path ?? "default.jpg"); // Car image (default if none)
+            $brand = htmlspecialchars($item->brand); 
+            $model = htmlspecialchars($item->model ?? "");
+            $price = htmlspecialchars($item->daily_price_huf ?? ""); 
+            $passengers = htmlspecialchars($item->passengers ?? ""); 
+            $imagePath = htmlspecialchars($item->image_path ?? "default.jpg"); 
             echo "
-            <div class='box' onclick=\"window.location.href='car-details.php?id=$id'\">
+            <div class='box'\">
                  <img src='images/$imagePath' alt='$brand $model' class='car-image'>
                 <h2>$brand $model</h2>
                 <p>Price: $price HUF/day</p>
-                <p>Passengers: $passengers</p>
-            </div>";
-           }
-           $remainingSlots = $itemsPerRow - count($row);
-           for ($j = 0; $j < $remainingSlots; $j++) {
-               echo "<div class='box hidden'></div>";
-           }
-           echo "</div>";
-       }
-       echo "</div>";
+                <p>Passengers: $passengers</p>";
+                if  ($user && isset($user['admin']) && $user['admin'] == true) {
+                    echo "<form method='GET' action='delete_car.php' class='delete-form'>
+                            <input type='hidden' name='car_id' value='" . htmlspecialchars($id) . "'>
+                            <button type='submit' class='delete-button'>Delete</button>
+                          </form>
+                          ";
+                          echo "<form method='GET' action='modify_car.php' class='delete-form'>
+                          <input type='hidden' name='car_id' value='" . htmlspecialchars($id) . "'>
+                          <button type='submit' class='delete-button'>Modify</button>
+                        </form>
+                        ";
+                        
+                }
+                else{
+                    echo "<form method='GET' action='car-details.php?' class='delete-form'>
+                          <input type='hidden' name='id' value='" . htmlspecialchars($id) . "'>
+                          <button type='submit' class='delete-button'>Select</button>
+                        </form>
+                        ";
+                    
+                
+            
+        }
+        echo "</div>";
+    }
+
+      if ($isAdmin && $i + $itemsPerRow >= $totalItems) {
+        echo "
+        <div class='box'>
+            <h2>Admin Box</h2>
+            <p>This is a special admin box.</p>
+            <button onclick=\"window.location.href='admin-actions.php'\">Admin Action</button>
+        </div>";
+    }
+
+
+       
+    $remainingSlots = $itemsPerRow - count($row) - ($isAdmin && $i + $itemsPerRow >= $totalItems ? 1 : 0);
+    for ($j = 0; $j < $remainingSlots; $j++) {
+        echo "<div class='box hidden'></div>";
+    }
+       
+        echo "</div>";}
+    
+   
+    echo "</div>";
+    
        
          ?>
 </body>
 
 </html>
+
+
+
